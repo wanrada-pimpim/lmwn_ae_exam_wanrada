@@ -1,0 +1,14 @@
+version: 2
+
+sources:
+  - name: source_transactions
+    database: ae_exam_db
+    schema: main
+    description: "Source tables related to transactions."
+    tables:
+      - name: order_transactions
+        description: "Captures all food delivery orders placed throughout the year, including order time, delivery, and final status."
+      - name: support_tickets
+        description: "Records customer support requests or complaints related to orders, drivers, or restaurants."
+      - name: campaign_interactions
+        description: "Logs customer interactions with marketing campaigns, such as impressions, clicks, and conversions."
