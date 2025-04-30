@@ -1,3 +1,8 @@
+{{ config ( 
+    materialized = "table",
+    schema = 'model_datamart' 
+) }}
+
 SELECT
     order_transactions.order_id,
     support_tickets.ticket_id,
@@ -11,8 +16,8 @@ SELECT
     support_tickets.csat_score,
     order_transactions.driver_id,
     restaurants_master.name AS restaurant_name
-FROM main.order_transactions
-LEFT JOIN main.support_tickets 
+FROM {{ source ('source_transactions', 'order_transactions') }}
+LEFT JOIN {{ source ('source_transactions', 'support_tickets') }}
 ON order_transactions.order_id = ae_exam_db.main.support_tickets.order_id
-LEFT JOIN main.restaurants_master 
+LEFT JOIN {{ source ('source_masters', 'restaurants_master') }}
 ON order_transactions.restaurant_id = restaurants_master.restaurant_id

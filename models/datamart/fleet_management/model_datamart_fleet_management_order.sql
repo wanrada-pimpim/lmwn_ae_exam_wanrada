@@ -1,3 +1,8 @@
+{{ config ( 
+    materialized = "table",
+    schema = 'model_datamart' 
+) }}
+
 SELECT
     drivers_master.driver_id,
     drivers_master.region,
@@ -13,6 +18,6 @@ SELECT
     order_transactions.delivery_datetime,
     date_diff('minute', order_transactions.pickup_datetime, order_transactions.delivery_datetime) AS delivery_minute,
     order_transactions.is_late_delivery
-FROM main.drivers_master
-LEFT JOIN main.order_transactions 
+FROM {{ source ('source_masters', 'drivers_master') }}
+LEFT JOIN {{ source ('source_transactions', 'order_transactions') }}
 ON drivers_master.driver_id = order_transactions.driver_id
