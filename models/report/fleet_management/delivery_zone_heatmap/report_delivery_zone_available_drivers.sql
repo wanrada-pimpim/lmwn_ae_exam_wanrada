@@ -1,10 +1,15 @@
+{{ config ( 
+    materialized = "table",
+    schema = 'report_fleet_management' 
+) }}
+
 WITH AVAILABLE_DRIVERS AS (
 	SELECT 
 		driver_id,
 		region,
 		join_date,
 		MAX(delivery_datetime) AS latest_delivery_datetime
-	FROM model_datamart.model_datamart_fleet_management_order
+	FROM {{ ref ('model_datamart_fleet_management_order') }}
 	GROUP BY
 		driver_id,
 		region,
@@ -23,7 +28,7 @@ WITH AVAILABLE_DRIVERS AS (
 		delivery_zone,
 		STRFTIME('%Y-%m', order_datetime) AS order_year_month,
 		COUNT(*) AS count_orders
-	FROM model_datamart.model_datamart_fleet_management_order
+	FROM {{ ref ('model_datamart_fleet_management_order') }}
 	GROUP BY 
 		delivery_zone,
 		STRFTIME('%Y-%m', order_datetime)

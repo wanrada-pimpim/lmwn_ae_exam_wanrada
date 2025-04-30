@@ -1,8 +1,13 @@
+{{ config ( 
+    materialized = "table",
+    schema = 'report_performance_marketing' 
+) }}
+
 WITH NEW_CUSTOMERS AS (
     SELECT DISTINCT
         campaign_id,
         customer_id
-    FROM model_datamart.model_datamart_performance_marketing    
+    FROM {{ ref ('model_datamart_performance_marketing') }}
     WHERE is_new_customer IS TRUE
 )
 , TOTAL_CUSTOMER_SPENDING AS (
@@ -10,7 +15,7 @@ WITH NEW_CUSTOMERS AS (
     	campaign_name,
     	customer_id,
     	SUM(total_amount) AS total_spending
-	FROM model_datamart.model_datamart_performance_marketing
+	FROM {{ ref ('model_datamart_performance_marketing') }}
 	WHERE CONCAT(campaign_id, '|', customer_id) IN (
 	    SELECT CONCAT(campaign_id, '|', customer_id)
 	    FROM NEW_CUSTOMERS

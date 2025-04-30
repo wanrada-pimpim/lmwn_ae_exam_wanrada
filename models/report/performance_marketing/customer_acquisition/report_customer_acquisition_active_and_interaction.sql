@@ -1,7 +1,12 @@
+{{ config ( 
+    materialized = "table",
+    schema = 'report_performance_marketing' 
+) }}
+
 WITH NEW_CUSTOMER AS (
     SELECT DISTINCT
         customer_id
-    FROM model_datamart.model_datamart_performance_marketing
+    FROM {{ ref ('model_datamart_performance_marketing') }}
     WHERE is_new_customer IS TRUE
 )
 , PURCHASE_DATE AS (
@@ -10,7 +15,7 @@ WITH NEW_CUSTOMER AS (
 		MIN(order_datetime) AS first_purchase_datetime,
 		MIN(CASE WHEN is_new_customer IS TRUE THEN order_datetime ELSE NULL END) AS first_campaign_purchase_datetime,
 		MAX(order_datetime) AS latest_purchase_datetime
-	FROM model_datamart.model_datamart_performance_marketing
+	FROM {{ ref ('model_datamart_performance_marketing') }}
 	WHERE customer_id IN (
 		SELECT customer_id
 		FROM NEW_CUSTOMER

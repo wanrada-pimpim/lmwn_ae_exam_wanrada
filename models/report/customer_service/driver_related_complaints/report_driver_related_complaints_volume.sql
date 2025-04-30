@@ -1,3 +1,8 @@
+{{ config ( 
+    materialized = "table",
+    schema = 'report_customer_service' 
+) }}
+
 WITH ISSUE_FLAG AS (
     SELECT
         driver_id,
@@ -8,7 +13,7 @@ WITH ISSUE_FLAG AS (
         END AS driver_related_issue_flag,
         ticket_id,
         order_id
-    FROM model_datamart.model_datamart_customer_service
+    FROM {{ ref ('model_datamart_customer_service') }}
 )
 SELECT
     driver_id,

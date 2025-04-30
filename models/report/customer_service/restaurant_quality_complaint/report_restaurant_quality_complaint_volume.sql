@@ -1,3 +1,8 @@
+{{ config ( 
+    materialized = "table",
+    schema = 'report_customer_service' 
+) }}
+
 WITH ISSUE_FLAG AS (
     SELECT
         restaurant_name,
@@ -9,7 +14,7 @@ WITH ISSUE_FLAG AS (
         ticket_id,
         order_id,
         compensation_amount
-    FROM model_datamart.model_datamart_customer_service
+    FROM {{ ref ('model_datamart_customer_service') }}
 )
 SELECT
     restaurant_name,

@@ -1,3 +1,8 @@
+{{ config ( 
+    materialized = "table",
+    schema = 'report_fleet_management' 
+) }}
+
 WITH ORDER_STATUS_DATETIME AS (
 	SELECT
 	    fleet.order_id,
@@ -7,8 +12,8 @@ WITH ORDER_STATUS_DATETIME AS (
 	    order_log.status AS order_status,
 	    order_log.status_datetime AS created_datetime,
 	    LEAD(order_log.status_datetime) OVER (PARTITION BY fleet.order_id, fleet.driver_id ORDER BY order_log.status_datetime) AS accepted_datetime
-	FROM model_datamart.model_datamart_fleet_management_order AS fleet
-	LEFT JOIN main.order_log_incentive_sessions_order_status_logs AS order_log
+	FROM {{ ref ('model_datamart_fleet_management_order') }} AS fleet
+	LEFT JOIN {{ source ('source_logs', 'order_log_incentive_sessions_order_status_logs') }} AS order_log
 	ON fleet.order_id = order_log.order_id
 	WHERE order_log.status IN ('created', 'accepted')
 )

@@ -1,9 +1,14 @@
+{{ config ( 
+    materialized = "table",
+    schema = 'report_performance_marketing' 
+) }}
+
 WITH RETARGETING_ORDER AS (
 	SELECT
 	    campaign_name,
 	    customer_id,
 	    COUNT(DISTINCT order_id) AS total_retargeting_order
-	FROM model_datamart.model_datamart_performance_marketing
+	FROM {{ ref ('model_datamart_performance_marketing') }}
 	WHERE campaign_type = 'retargeting' AND customer_segment = 'inactive'
 	GROUP BY 
 		campaign_name,

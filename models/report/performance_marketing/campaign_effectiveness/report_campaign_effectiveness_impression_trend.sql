@@ -1,9 +1,14 @@
+{{ config ( 
+    materialized = "table",
+    schema = 'report_performance_marketing' 
+) }}
+
 WITH DATE_TRANSFORMATION AS (
 	SELECT
 	    campaign_name,
 	    strftime(interaction_datetime, '%Y-%m') AS interaction_year_month,
 	    event_type
-	FROM model_datamart.model_datamart_performance_marketing
+	FROM {{ ref ('model_datamart_performance_marketing') }}
     WHERE campaign_id IS NOT NULL
 )
 SELECT
