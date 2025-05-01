@@ -1,0 +1,30 @@
+version: 2
+
+models:
+  - name: model_datamart_customer_service
+    tests:
+      - dbt_utils.equal_rowcount:
+          compare_model: source('source_transactions', 'order_transactions')
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - order_id
+            - ticket_id
+            - issue_type
+            - issue_sub_type
+            - opened_datetime
+            - resolved_datetime
+            - resolved_minute
+            - issue_status
+            - compensation_amount
+            - csat_score
+            - driver_id
+            - restaurant_name
+    columns:
+      - name: order_id
+        tests:
+          - not_null
+          - unique
+      - name: resolved_minute
+        tests:
+          - dbt_utils.expression_is_true:
+                expression: ">= 0"

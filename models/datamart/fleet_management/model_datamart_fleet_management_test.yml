@@ -1,0 +1,51 @@
+version: 2
+
+models:
+  - name: model_datamart_fleet_management_order
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - driver_id
+            - region
+            - vehicle_type
+            - driver_rating
+            - join_date
+            - driver_status
+            - order_id
+            - order_status
+            - delivery_zone
+            - order_datetime
+            - pickup_datetime
+            - delivery_datetime
+            - delivery_minute
+            - is_late_delivery
+    columns:
+      - name: driver_id
+        tests:
+          - not_null
+      - name: region
+        tests:
+          - not_null
+      - name: vehicle_type
+        tests:
+          - not_null
+      - name: delivery_minute
+        tests:
+          - dbt_utils.expression_is_true:
+                expression: ">= 0"
+  - name: model_datamart_fleet_management_incentive_program
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - driver_id
+            - bonus_tier
+            - incentive_program
+            - applied_date
+            - delivery_target
+            - actual_deliveries
+            - bonus_amount
+            - bonus_qualified
+    columns:
+      - name: driver_id
+        tests:
+          - not_null

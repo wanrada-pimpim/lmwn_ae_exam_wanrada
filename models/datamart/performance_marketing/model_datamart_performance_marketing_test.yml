@@ -1,0 +1,40 @@
+version: 2
+
+models:
+  - name: model_datamart_performance_marketing
+    tests:
+      - dbt_utils.equal_rowcount:
+          compare_model: source('source_transactions', 'order_transactions')
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - order_id
+            - order_datetime
+            - total_amount
+            - order_status
+            - customer_id
+            - campaign_id
+            - campaign_name
+            - campaign_start_date
+            - campaign_end_date
+            - campaign_type
+            - objective
+            - channel
+            - budget
+            - interaction_datetime
+            - event_type
+            - platform
+            - ad_cost
+            - customer_segment
+            - customer_status
+            - is_new_customer
+    columns:
+      - name: order_id
+        tests:
+          - not_null
+          - unique
+      - name: order_datetime
+        tests:
+          - not_null
+      - name: total_amount
+        tests:
+          - not_null
