@@ -8,9 +8,79 @@ sources:
     tables:
       - name: support_ticket_status_logs
         description: "Tracks the status changes of each support ticket over time."
+        columns:
+        - name: log_id
+          tests:
+            - not_null
+            - unique
+        - name: ticket_id
+          tests:
+            - not_null
+            - relationships:
+                to: source('source_transactions', 'support_tickets')
+                field: ticket_id
+        - name: status
+          tests:
+            - not_null
+        - name: status_datetime
+          tests:
+            - not_null
       - name: order_log_incentive_sessions_order_status_logs
         description: "Logs the step-by-step status updates for each order from creation to delivery or cancellation."
+        columns:
+        - name: log_id
+          tests:
+            - not_null
+            - unique
+        - name: order_id
+          tests:
+            - not_null
+            - relationships:
+                to: source('source_transactions', 'order_transactions')
+                field: order_id
+        - name: status
+          tests:
+            - not_null
+        - name: status_datetime
+          tests:
+            - not_null
       - name: order_log_incentive_sessions_driver_incentive_logs
         description: "Stores information about driver bonuses or incentives, including performance targets and qualification status."
+        columns:
+        - name: log_id
+          tests:
+            - not_null
+            - unique
+        - name: driver_id
+          tests:
+            - not_null
+            - relationships:
+                to: source('source_masters', 'drivers_master')
+                field: driver_id
+        - name: incentive_program
+          tests:
+            - not_null
+        - name: bonus_amount
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                expression: ">= 0"
+        - name: applied_date
+          tests:
+            - not_null
       - name: order_log_incentive_sessions_customer_app_sessions
         description: "Tracks customer activity when using the mobile application, including session duration and device used."
+        columns:
+        - name: session_id
+          tests:
+            - not_null
+            - unique
+        - name: customer_id
+          tests:
+            - not_null
+            - relationships:
+                to: source('source_masters', 'customers_master')
+                field: customer_id
+        - name: session_start
+          tests:
+            - not_null

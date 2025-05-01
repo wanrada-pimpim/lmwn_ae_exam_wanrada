@@ -8,7 +8,105 @@ sources:
     tables:
       - name: order_transactions
         description: "Captures all food delivery orders placed throughout the year, including order time, delivery, and final status."
+        columns:
+        - name: order_id
+          tests:
+            - not_null
+            - unique
+        - name: customer_id
+          tests:
+            - not_null
+            - relationships:
+                to: source('source_masters', 'customers_master')
+                field: customer_id
+        - name: restaurant_id
+          tests:
+            - not_null
+            - relationships:
+                to: source('source_masters', 'restaurants_master')
+                field: restaurant_id
+        - name: driver_id
+          tests:
+            - not_null
+            - relationships:
+                to: source('source_masters', 'drivers_master')
+                field: driver_id
+        - name: order_datetime
+          tests:
+            - not_null
+        - name: order_status
+          tests:
+            - not_null
+        - name: delivery_zone
+          tests:
+            - not_null
+        - name: total_amount
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                expression: ">= 0"
       - name: support_tickets
         description: "Records customer support requests or complaints related to orders, drivers, or restaurants."
+        columns:
+        - name: ticket_id
+          tests:
+            - not_null
+            - unique
+        - name: order_id
+          tests:
+            - not_null
+            - relationships:
+                to: source('source_transactions', 'order_transactions')
+                field: order_id
+        - name: issue_type
+          tests:
+            - not_null
+        - name: issue_sub_type
+          tests:
+            - not_null
+        - name: opened_datetime
+          tests:
+            - not_null
+        - name: status
+          tests:
+            - not_null
+        - name: compensation_amount
+          tests:
+            - dbt_utils.expression_is_true:
+                expression: ">= 0"
       - name: campaign_interactions
         description: "Logs customer interactions with marketing campaigns, such as impressions, clicks, and conversions."
+        columns:
+        - name: interaction_id
+          tests:
+            - not_null
+            - unique
+        - name: campaign_id
+          tests:
+            - not_null
+            - relationships:
+                to: source('source_masters', 'campaign_master')
+                field: campaign_id
+        - name: interaction_datetime
+          tests:
+            - not_null
+        - name: event_type
+          tests:
+            - not_null
+        - name: platform
+          tests:
+            - not_null
+        - name: ad_cost
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                expression: ">= 0"
+        - name: order_id
+          tests:
+            - not_null
+            - relationships:
+                to: source('source_transactions', 'order_transactions')
+                field: order_id
+        - name: is_new_customer
+          tests:
+            - not_null
