@@ -18,6 +18,6 @@ SELECT
     restaurants_master.name AS restaurant_name
 FROM {{ source ('source_transactions', 'order_transactions') }}
 LEFT JOIN {{ source ('source_transactions', 'support_tickets') }}
-ON order_transactions.order_id = ae_exam_db.main.support_tickets.order_id
+ON order_transactions.order_id = support_tickets.order_id
 LEFT JOIN {{ source ('source_masters', 'restaurants_master') }}
 ON order_transactions.restaurant_id = restaurants_master.restaurant_id
